@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
+
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
@@ -21,6 +22,8 @@ const opts = {
 
 const CandyMachine = ({ walletAddress }) => {
 
+  const [ candyMachine, setCandyMachine ] = useState("");
+
   const getCandyMachineCreator = async (candyMachine) => {
     const candyMachineID = new PublicKey(candyMachine);
     return await web3.PublicKey.findProgramAddress(
@@ -28,6 +31,8 @@ const CandyMachine = ({ walletAddress }) => {
         candyMachineProgram,
     );
   };
+
+
 
   const getMetadata = async (mint) => {
     return (
@@ -41,6 +46,7 @@ const CandyMachine = ({ walletAddress }) => {
       )
     )[0];
   };
+
 
   const getMasterEdition = async (mint) => {
     return (
@@ -295,6 +301,68 @@ const CandyMachine = ({ walletAddress }) => {
       console.log(e);
     }
     return [];
+  };
+
+
+  useEffect(() => {
+    getCandyMachineState();
+  }, []);
+
+  const getProvider = () => {
+    // rpc host into solana network
+    const rpcHost = process.env.REACT_APP_SOLANA_RPC_HOST;
+    // create a new connection object 
+    const connection = new Connection(rpcHost);
+
+    // Create a new Solana provider
+    const provider = new Provider(
+      connection,
+      window.solana,
+      opts.preflightCommitment
+    );
+
+    return provider;
+  }
+  // declary candymachine state as an async method
+  const getCandyMachineState = async () => {
+    const provider = getProvider();
+
+    // get metadata around deployed candy machine
+    const idl = await Program.fetchIdl(candyMachineProgram, provider);
+
+    // Create a program that this can call
+    const program = new Program(idl, candyMachineProgram, provider);
+
+    // fetch meta data from candy machine
+    const candyMachine = await program.account.candyMachine.fetch(
+      process.env.REACT_APP_CANDY_MACHINE_ID
+    );
+
+    // parse out metadata and log it
+    // this is specific to candyMachine
+    const itemsAvailable = candyMachine.data.itemsAvailable.toNumber();
+    const itemsRedeemed = candyMachine.itemsRedeemed.toNumber();
+    const itemsRemaining = itemsAvailable - itemsRedeemed;
+    const goLiveData = candyMachine.data.goLiveDate.toNumber();
+    const presale = 
+      candyMachine.data.whitelistMintSettings &&
+      candyMachine.data.whitelistMintSettings.presale &&
+        (!candyMachine.data.goLiveDate ||
+          candyMachine.data.goLiveDate.toNumber() > new Date().getTime() / 1000);
+
+    // use this later
+    const goLiveDateTimeString = `${new Date(
+      goLiveData * 1000
+    ).toGMTString()}`
+
+    console.log({
+      itemsAvailable,
+      itemsRedeemed,
+      itemsRemaining,
+      goLiveData,
+      goLiveDateTimeString,
+      presale,
+    });
   };
 
   return (
