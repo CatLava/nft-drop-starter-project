@@ -1,0 +1,19 @@
+{
+  "name": "Doodle Dog #1",
+  "symbol": "DD",
+  "image": "1.png",
+  "properties": {
+    "files": [
+      {
+        "uri": "1.png",
+        "type": "image/png"
+      }
+    ],
+    "creators": [
+      {
+        "address": "6ySrn5HTZBe4p8wcgjuiRg4YN1KQSJKjpLJkfnMohUBb",
+        "share": 100
+      }
+    ]
+  }
+}

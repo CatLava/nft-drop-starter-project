@@ -22,7 +22,11 @@ const opts = {
 
 const CandyMachine = ({ walletAddress }) => {
 
+<<<<<<< HEAD
   const [ candyMachine, setCandyMachine ] = useState('');
+=======
+  const [ candyMachine, setCandyMachine ] = useState("");
+>>>>>>> fe9e249724fc6e772e8f73c9bb3338a46f188770
 
   const getCandyMachineCreator = async (candyMachine) => {
     const candyMachineID = new PublicKey(candyMachine);
@@ -355,6 +359,7 @@ const CandyMachine = ({ walletAddress }) => {
       goLiveData * 1000
     ).toGMTString()}`
 
+<<<<<<< HEAD
     setCandyMachine({
       id: process.env.REACT_APP_CANDY_MACHINE_ID,
       program,
@@ -384,6 +389,8 @@ const CandyMachine = ({ walletAddress }) => {
       },
     });
 
+=======
+>>>>>>> fe9e249724fc6e772e8f73c9bb3338a46f188770
     console.log({
       itemsAvailable,
       itemsRedeemed,
@@ -394,7 +401,10 @@ const CandyMachine = ({ walletAddress }) => {
     });
   };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> fe9e249724fc6e772e8f73c9bb3338a46f188770
   return (
     candyMachine && (<div className="machine-container">
       <p>{`Drop Date: ${candyMachine.state.goLiveDateTimeString}`}</p>
